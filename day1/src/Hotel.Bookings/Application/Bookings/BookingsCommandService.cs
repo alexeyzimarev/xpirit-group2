@@ -8,7 +8,7 @@ namespace Hotel.Bookings.Application.Bookings {
         public BookingsCommandService(IAggregateStore store) : base(store) {
             OnNew<BookingCommands.BookRoom>(
                 (booking, cmd) => {
-                    
+                    // booking.BookRoom()
                 });
         }
     }
