@@ -6,7 +6,7 @@ using Hotel.Bookings.Domain.Bookings;
 
 namespace Hotel.Bookings.Application.Bookings {
     public class BookingsCommandService : ApplicationService<Booking, BookingState, BookingId> {
-        public BookingsCommandService(IAggregateStore store) : base(store) {
+        public BookingsCommandService(IAggregateStore store, Services.IsRoomAvailable isRoomAvailable) : base(store) {
             OnNewAsync<BookingCommands.BookRoom>(
                 cmd => new BookingId(cmd.BookingId),
                 (booking, cmd, _) => {
@@ -18,7 +18,7 @@ namespace Hotel.Bookings.Application.Bookings {
                         new Money(cmd.BookingPrice, cmd.Currency),
                         new Money(cmd.PrepaidAmount, cmd.Currency),
                         DateTimeOffset.Now,
-                        (id, period) => new ValueTask<bool>(true)
+                        isRoomAvailable
                     );
                 }
             );

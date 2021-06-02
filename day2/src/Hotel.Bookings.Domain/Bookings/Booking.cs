@@ -39,7 +39,6 @@ namespace Hotel.Bookings.Domain.Bookings {
 
         public void RecordPayment(
             Money           paid,
-            ConvertCurrency convertCurrency,
             string          paidBy,
             DateTimeOffset  paidAt
         ) {

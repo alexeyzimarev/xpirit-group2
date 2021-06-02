@@ -16,9 +16,12 @@ namespace Hotel.Bookings.Domain.Bookings {
             bool           Paid,
             DateTimeOffset BookingDate
         );
+
+        public record PaymentRecorded();
         
         public static void MapEvents() {
             TypeMap.AddType<RoomBooked>("V1.RoomBooked");
+            TypeMap.AddType<PaymentRecorded>("V1.PaymentRecorded");
         }
     }
 }

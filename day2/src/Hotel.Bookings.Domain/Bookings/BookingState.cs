@@ -1,4 +1,5 @@
 using Eventuous;
+using static Hotel.Bookings.Domain.Bookings.BookingEvents;
 
 namespace Hotel.Bookings.Domain.Bookings {
     public record BookingState : AggregateState<BookingState, BookingId> {
@@ -11,7 +12,7 @@ namespace Hotel.Bookings.Domain.Bookings {
 
         public override BookingState When(object evt) {
             return evt switch {
-                BookingEvents.RoomBooked booked => this with {
+                RoomBooked booked => this with {
                     Id = new BookingId(booked.BookingId),
                     RoomId = new RoomId(booked.RoomId),
                     Period = new StayPeriod(booked.CheckInDate, booked.CheckOutDate),
@@ -20,6 +21,7 @@ namespace Hotel.Bookings.Domain.Bookings {
                     Outstanding = new Money(booked.OutstandingAmount, booked.Currency),
                     Paid = booked.Paid
                 },
+                PaymentRecorded => this,
                 _ => this
             };
         }
