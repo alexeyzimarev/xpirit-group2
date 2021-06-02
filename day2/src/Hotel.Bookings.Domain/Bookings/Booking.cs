@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Eventuous;
+using static Hotel.Bookings.Domain.Bookings.BookingEvents;
 using static Hotel.Bookings.Domain.Services;
 
 namespace Hotel.Bookings.Domain.Bookings {
@@ -17,11 +18,11 @@ namespace Hotel.Bookings.Domain.Bookings {
         ) {
             EnsureDoesntExist();
             await EnsureRoomAvailable(roomId, period, isRoomAvailable);
-            
+
             var outstanding = price - prepaid;
 
             Apply(
-                new BookingEvents.RoomBooked(
+                new RoomBooked(
                     bookingId,
                     guestId,
                     roomId,
@@ -38,11 +39,44 @@ namespace Hotel.Bookings.Domain.Bookings {
         }
 
         public void RecordPayment(
-            Money           paid,
-            string          paidBy,
-            DateTimeOffset  paidAt
+            Money          paid,
+            string         paymentId,
+            string         paidBy,
+            DateTimeOffset paidAt
         ) {
             EnsureExists();
+
+            var outstanding = State.Outstanding - paid;
+
+            Apply(
+                new PaymentRecorded(
+                    State.Id,
+                    paid.Amount,
+                    outstanding.Amount,
+                    paid.Currency,
+                    paymentId,
+                    paidBy,
+                    paidAt
+                )
+            );
+        }
+
+        public void ApplyDiscount(Money discount, string reason, string appliedBy, DateTimeOffset appliedAt) {
+            EnsureExists();
+            
+            var outstanding = State.Outstanding - discount;
+
+            Apply(
+                new DiscountApplied(
+                    State.Id,
+                    discount.Amount,
+                    outstanding.Amount,
+                    discount.Currency,
+                    reason,
+                    appliedBy,
+                    appliedAt
+                )
+            );
         }
 
         static async Task EnsureRoomAvailable(RoomId roomId, StayPeriod period, IsRoomAvailable isRoomAvailable) {

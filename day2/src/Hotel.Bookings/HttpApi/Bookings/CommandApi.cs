@@ -15,5 +15,15 @@ namespace Hotel.Bookings.HttpApi.Bookings {
         [Route("book")]
         public Task BookRoom([FromBody] BookRoom cmd, CancellationToken cancellationToken)
             => _service.Handle(cmd, cancellationToken);
+        
+        [HttpPost]
+        [Route("recordPayment")]
+        public Task BookRoom([FromBody] RecordPayment cmd, CancellationToken cancellationToken)
+            => _service.Handle(cmd, cancellationToken);
+        
+        // [HttpPost]
+        // [Route("applyDiscount")]
+        // public Task BookRoom([FromBody] ApplyDiscount cmd, CancellationToken cancellationToken)
+        //     => _service.Handle(cmd, cancellationToken);
     }
 }

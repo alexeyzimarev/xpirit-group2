@@ -21,7 +21,14 @@ namespace Hotel.Bookings.Domain.Bookings {
                     Outstanding = new Money(booked.OutstandingAmount, booked.Currency),
                     Paid = booked.Paid
                 },
-                PaymentRecorded => this,
+                PaymentRecorded  e => this with {
+                    Outstanding = new Money(e.Outstanding, e.Currency),
+                    Paid = e.Outstanding == 0
+                },
+                DiscountApplied  e => this with {
+                    Outstanding = new Money(e.Outstanding, e.Currency),
+                    Paid = e.Outstanding == 0
+                },
                 _ => this
             };
         }

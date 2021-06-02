@@ -14,6 +14,8 @@ namespace Hotel.Bookings.Application.Bookings {
             DateTimeOffset BookingDate
         );
 
-        public record RecordPayment(string BookingId, float PaidAmount, string Currency, string PaymentId);
+        public record RecordPayment(string BookingId, float PaidAmount, string Currency, string PaymentId, string PaidBy);
+        
+        public record ApplyDiscount(string BookingId, float Discount, string Currency, string Reason, string AppliedBy);
     }
 }
