@@ -1,5 +1,4 @@
 using System;
-using System.Threading.Tasks;
 using Eventuous;
 using Hotel.Bookings.Domain;
 using Hotel.Bookings.Domain.Bookings;
@@ -32,7 +31,7 @@ namespace Hotel.Bookings.Application.Bookings {
                 )
             );
 
-            OnExisting<BookingEvents.DiscountApplied>(
+            OnExisting<ApplyDiscount>(
                 cmd => new BookingId(cmd.BookingId),
                 (booking, cmd) => booking.ApplyDiscount(
                     new Money(cmd.Discount, cmd.Currency),

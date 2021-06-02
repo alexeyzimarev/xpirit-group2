@@ -22,7 +22,7 @@ namespace Hotel.Bookings.Domain.Bookings {
             var outstanding = price - prepaid;
 
             Apply(
-                new RoomBooked(
+                new V1.RoomBooked(
                     bookingId,
                     guestId,
                     roomId,
@@ -46,10 +46,12 @@ namespace Hotel.Bookings.Domain.Bookings {
         ) {
             EnsureExists();
 
+            if (State.HasPaymentBeenRegistered(paymentId)) return;
+            
             var outstanding = State.Outstanding - paid;
 
             Apply(
-                new PaymentRecorded(
+                new V1.PaymentRecorded(
                     State.Id,
                     paid.Amount,
                     outstanding.Amount,
@@ -59,15 +61,21 @@ namespace Hotel.Bookings.Domain.Bookings {
                     paidAt
                 )
             );
+            
+            MarkPaidIfNecessary();
         }
 
         public void ApplyDiscount(Money discount, string reason, string appliedBy, DateTimeOffset appliedAt) {
             EnsureExists();
+
+            if (State.HasDiscountBeenAlreadyApplied) {
+                throw new DomainException("No more than one discount could be applied");
+            }
             
             var outstanding = State.Outstanding - discount;
 
             Apply(
-                new DiscountApplied(
+                new V1.DiscountApplied(
                     State.Id,
                     discount.Amount,
                     outstanding.Amount,
@@ -77,6 +85,13 @@ namespace Hotel.Bookings.Domain.Bookings {
                     appliedAt
                 )
             );
+            
+            MarkPaidIfNecessary();
+        }
+
+        void MarkPaidIfNecessary() {
+            if (State.Outstanding == 0)
+                Apply(new V1.BookingFullyPaid(State.Id));
         }
 
         static async Task EnsureRoomAvailable(RoomId roomId, StayPeriod period, IsRoomAvailable isRoomAvailable) {

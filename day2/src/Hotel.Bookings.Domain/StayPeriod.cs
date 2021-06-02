@@ -3,8 +3,8 @@ using Eventuous;
 
 namespace Hotel.Bookings.Domain {
     public record StayPeriod {
-        public DateTimeOffset CheckIn  { get; internal init; }
-        public DateTimeOffset CheckOut { get; internal init; }
+        public DateTimeOffset CheckIn  { get; }
+        public DateTimeOffset CheckOut { get; }
         
         internal StayPeriod() { }
 
