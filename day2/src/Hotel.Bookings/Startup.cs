@@ -2,6 +2,9 @@ using System.Threading.Tasks;
 using EventStore.Client;
 using Eventuous;
 using Eventuous.EventStoreDB;
+using Eventuous.Projections.MongoDB;
+using Eventuous.Subscriptions;
+using Hotel.Bookings.Application;
 using Hotel.Bookings.Application.Bookings;
 using Hotel.Bookings.Domain;
 using Hotel.Bookings.Domain.Bookings;
@@ -40,6 +43,10 @@ namespace Hotel.Bookings {
             // Domain services
             services.AddSingleton<Services.IsRoomAvailable>((id, period) => new ValueTask<bool>(true));
             services.AddSingleton<Services.ConvertCurrency>((from, currency) => new Money(from.Amount * 2, currency));
+            
+            // Add projections
+            services.AddSingleton<ICheckpointStore, MongoCheckpointStore>();
+            services.AddSubscription<ProjectionSubscription>().AddEventHandler<BookingStateProjection>();
 
             // API
             services.AddControllers();

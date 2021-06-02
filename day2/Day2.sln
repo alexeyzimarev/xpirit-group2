@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Bookings", "src\Hotel
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Bookings.Domain", "src\Hotel.Bookings.Domain\Hotel.Bookings.Domain.csproj", "{27CAAC5A-7361-413C-97D5-ABF5F430F017}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hotel.Payments", "src\Hotel.Payments\Hotel.Payments.csproj", "{7AB5A837-5114-4446-8D76-560893358837}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{27CAAC5A-7361-413C-97D5-ABF5F430F017}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27CAAC5A-7361-413C-97D5-ABF5F430F017}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27CAAC5A-7361-413C-97D5-ABF5F430F017}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7AB5A837-5114-4446-8D76-560893358837}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7AB5A837-5114-4446-8D76-560893358837}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7AB5A837-5114-4446-8D76-560893358837}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7AB5A837-5114-4446-8D76-560893358837}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
