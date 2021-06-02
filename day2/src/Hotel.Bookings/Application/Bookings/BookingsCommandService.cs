@@ -1,24 +1,32 @@
 using System;
 using System.Threading.Tasks;
-using CoreLib;
+using Eventuous;
 using Hotel.Bookings.Domain;
 using Hotel.Bookings.Domain.Bookings;
 
 namespace Hotel.Bookings.Application.Bookings {
-    public class BookingsCommandService : CommandService<Booking, BookingId, BookingState> {
+    public class BookingsCommandService : ApplicationService<Booking, BookingState, BookingId> {
         public BookingsCommandService(IAggregateStore store) : base(store) {
-            OnNew<BookingCommands.BookRoom>(
-                async (booking, cmd) => {
-                    await booking.BookRoom(
+            OnNewAsync<BookingCommands.BookRoom>(
+                cmd => new BookingId(cmd.BookingId),
+                (booking, cmd, _) => {
+                    return booking.BookRoom(
                         new BookingId(cmd.BookingId),
                         cmd.GuestId,
                         new RoomId(cmd.RoomId),
                         new StayPeriod(cmd.CheckInDate, cmd.CheckOutDate),
                         new Money(cmd.BookingPrice, cmd.Currency),
+                        new Money(cmd.PrepaidAmount, cmd.Currency),
                         DateTimeOffset.Now,
                         (id, period) => new ValueTask<bool>(true)
                     );
-                });
+                }
+            );
+            
+            OnExisting<BookingCommands.RecordPayment>(
+                cmd => new BookingId(cmd.BookingId),
+                (booking, cmd) => {}
+            );
         }
     }
 }

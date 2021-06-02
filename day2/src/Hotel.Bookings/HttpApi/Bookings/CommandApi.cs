@@ -12,8 +12,8 @@ namespace Hotel.Bookings.HttpApi.Bookings {
         public CommandApi(BookingsCommandService service) => _service = service;
 
         [HttpPost]
-        [Route("new")]
+        [Route("book")]
         public Task BookRoom([FromBody] BookRoom cmd, CancellationToken cancellationToken)
-            => _service.HandleNew(cmd, cancellationToken);
+            => _service.Handle(cmd, cancellationToken);
     }
 }
