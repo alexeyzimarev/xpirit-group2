@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using EventStore.Client;
 using Eventuous;
 using Eventuous.EventStoreDB;
 using Eventuous.Projections.MongoDB;
@@ -11,7 +10,6 @@ using Hotel.Bookings.Domain.Bookings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Serilog;
@@ -46,7 +44,10 @@ namespace Hotel.Bookings {
             
             // Add projections
             services.AddSingleton<ICheckpointStore, MongoCheckpointStore>();
-            services.AddSubscription<ProjectionSubscription>().AddEventHandler<BookingStateProjection>();
+            services
+                .AddSubscription<ProjectionSubscription>()
+                .AddEventHandler<BookingStateProjection>()
+                .AddEventHandler<MyBookingsProjection>();
 
             // API
             services.AddControllers();
@@ -80,23 +81,6 @@ namespace Hotel.Bookings {
         static IMongoDatabase ConfigureMongo(string connectionString, string database) {
             var settings = MongoClientSettings.FromConnectionString(connectionString);
             return new MongoClient(settings).GetDatabase(database);
-        }
-
-        static EventStoreClient ConfigureEventStore(string connectionString, ILoggerFactory loggerFactory) {
-            // AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
-
-            // services.AddSingleton(
-            //     ctx
-            //         => ConfigureEventStore(
-            //             Configuration["EventStore:ConnectionString"],
-            //             ctx.GetService<ILoggerFactory>()
-            //         )
-            // );
-
-            var settings = EventStoreClientSettings.Create(connectionString);
-            settings.ConnectionName = "bookingApp";
-            settings.LoggerFactory  = loggerFactory;
-            return new EventStoreClient(settings);
         }
     }
 }

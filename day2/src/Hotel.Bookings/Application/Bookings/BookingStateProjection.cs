@@ -5,6 +5,7 @@ using Eventuous.Projections.MongoDB.Tools;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using static Hotel.Bookings.Domain.Bookings.BookingEvents;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
 
 namespace Hotel.Bookings.Application.Bookings {
     public class BookingStateProjection : MongoProjection<BookingDocument> {
@@ -24,6 +25,20 @@ namespace Hotel.Bookings.Application.Bookings {
                         .Set(x => x.BookingPrice, e.BookingPrice)
                         .Set(x => x.Outstanding, e.OutstandingAmount)
                         .Set(x => x.Paid, e.Paid)
+                ),
+                V1.PaymentRecorded e => UpdateOperationTask(
+                    e.BookingId,
+                    update => update
+                        .Set(x => x.Outstanding, e.Outstanding)
+                ),
+                V1.DiscountApplied e => UpdateOperationTask(
+                    e.BookingId,
+                    update => update
+                        .Set(x => x.Outstanding, e.Outstanding)
+                ),
+                V1.BookingFullyPaid e => UpdateOperationTask(
+                    e.BookingId,
+                    u => u.Set(x => x.Paid, true)
                 ),
                 _ => NoOp
             };

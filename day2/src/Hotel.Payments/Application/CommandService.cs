@@ -6,12 +6,18 @@ namespace Hotel.Payments.Application {
         public CommandService(IAggregateStore store) : base(store) {
             OnNew<PaymentCommands.RecordPayment>(
                 cmd => new PaymentId(cmd.PaymentId),
-                (payment, cmd) => payment.ProcessPayment(cmd.PaymentId, cmd.Amount)
+                (payment, cmd) => payment.ProcessPayment(
+                    new PaymentId(cmd.PaymentId),
+                    cmd.BookingId,
+                    cmd.Amount,
+                    cmd.Method, 
+                    cmd.Provider
+                )
             );
         }
     }
 
-    static class PaymentCommands {
-        public record RecordPayment(string PaymentId, float Amount);
+    public static class PaymentCommands {
+        public record RecordPayment(string PaymentId, string BookingId, float Amount, string Method, string Provider);
     }
 }
